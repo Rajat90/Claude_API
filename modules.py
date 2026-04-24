@@ -29,10 +29,19 @@ def add_assistant_message(messages, text):
     return messages
 
 # get the response from the model based on the conversation
-def chat(messages):
-    response = client.messages.create(
-        model=model,
-        max_tokens=1000,
-        messages=messages
-    )
+def chat(messages, system=None, temperature=1.0,stop_sequences=[]):   
+    params = {
+        "model": model,
+        "max_tokens": 1000,
+        "messages": messages,
+        "temperature": temperature
+    }
+
+    if system is not None:
+        params["system"] = system
+    
+    if stop_sequences:
+        params["stop"] = stop_sequences
+
+    response = client.messages.create(**params)
     return response.content[0].text
